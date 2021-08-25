@@ -1,5 +1,8 @@
 ### Hi there 👋
-
+- 📫 How to reach me: [email](mailto:andrew.wang27@gmail.com)
+- 💻 I made a Python Computer Vision web-app here: http://open-set-resnet-web-app.herokuapp.com/ (source: [open-set-resnet](https://github.com/Andrewwango/open-set-resnet))
+- 🔭 I’m currently working a state-of-the-art robust classification algorithm: [femda](https://github.com/Andrewwango/femda)
+- 🌱 I’m currently learning about dynamical Variational Autoencoders [[repo]](https://github.com/Andrewwango/dvae-experiments) 
 <!--
 **Andrewwango/andrewwango** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
 
