@@ -1,9 +1,8 @@
 ### Hi there 👋
 - 📫 How to reach me: [email](mailto:andrew.wang27@gmail.com)
-- 📄 Portfolio: [website](https://andrewwango.github.io/)
-- 💻 I made a Python Computer Vision web-app here: https://andrewwango.github.io/open-set-resnet-web-app (source: [open-set-resnet](https://github.com/Andrewwango/open-set-resnet))
-- 🔭 I’m currently working on a state-of-the-art robust classification algorithm: [femda](https://github.com/Andrewwango/femda)
-- 🌱 I’m currently learning about dynamical Variational Autoencoders [[repo]](https://github.com/Andrewwango/dvae-experiments) 
+- 📄 Check out my [portfolio](https://andrewwango.github.io/) and my [CV](https://andrewwango.github.io/cv.pdf)
+- 💻 I recently graduated from Cambridge Uni: [a brief blog about my Master's research](https://andrewwango.github.io/iib_project/)
+- 🔭 I’m currently working on improving land access in the UK using data analytics: [blog](https://andrewwango.github.io/prow_ml/)
 <!--
 **Andrewwango/andrewwango** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
 
