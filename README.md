@@ -1,4 +1,4 @@
-### Hi there 👋
+### Hi
 - 📫 How to reach me: [email](mailto:andrew.wang27@gmail.com)
 - 📄 Check out my [portfolio](https://andrewwango.github.io/), my [CV](https://andrewwango.github.io/cv.pdf) and [Google Scholar](https://scholar.google.com/citations?user=00ET0NAAAAAJ)
 - 💻 I recently graduated from the [University of Cambridge](http://www.eng.cam.ac.uk/) and am now an AI Engineer at [Kainos](https://www.kainos.com/)
