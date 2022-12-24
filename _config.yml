@@ -1,9 +1,10 @@
-title: Figs
-description: A resume theme
+title: Andrew Wang's Portfolio
+description: Andrew Wang's personal website and data science portfolio
 
 # enabled baseurl if you are using project pages in Github or Gitlab
 #baseurl: /figs
 
+# TODO: remove blog path and works path?
 permalink: /blog/:title/
 
 include:
@@ -17,7 +18,10 @@ exclude:
 collections:
   works:
     output: true
-    permalink: /works/:path/
+    permalink: /research/:path/
+  personal:
+    output: true
+    permalink: /personal/:path/
 
 plugins:
   - jekyll-postcss

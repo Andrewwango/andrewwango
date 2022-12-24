@@ -1,35 +1,28 @@
-name: John Owens
-image: https://randomuser.me/api/portraits/men/86.jpg
+name: Andrew Wang
+image: /assets/img/logo.jpg
 designations:
-  - Teacher
-  - Freelancer
-  - Blogger
-  - Programmer
+about: AI Engineer at <a href="https://www.kainos.com/">Kainos</a>. Cambridge Uni MEng grad. Data scientist and researcher passionate about environmental sustainability & land justice. Campaigning for better access to the outdoors for everyone. Speak to me in 🇬🇧 🇫🇷 🇨🇳 🇩🇪
 
 social:
   - title: LinkedIn
-    link: "#"
+    link: https://www.linkedin.com/in/andrewwang27/
     icon: fa-linkedin
 
-  - title: Facebook
-    link: "#"
-    icon: fa-facebook-square
-
   - title: Twitter
-    link: "#"
+    link: https://twitter.com/andrewwango
     icon: fa-twitter-square
 
   - title: Github
-    link: "#"
+    link: https://github.com/andrewwango
     icon: fa-github-square
 
-  - title: StackOverflow
-    link: "#"
-    icon: fa-stack-overflow
+  - title: Google Scholar
+    link: https://scholar.google.com/citations?user=00ET0NAAAAAJ
+    icon: fa-google-scholar
 
 sidebar-links:
-  - title: Download CV
-    link: "/assets/docs/resume.pdf"
+  - title: Curriculum Vitae
+    link: /cv.pdf
     downloadable: true
 
   - title: Contact me
