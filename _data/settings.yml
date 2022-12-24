@@ -4,8 +4,8 @@ text-color-scheme: text-blue-500
 # you have these options: https://tailwindcss.com/docs/customizing-colors
 # Do not use white or lighter shades of gray since the text may not be visible
 
-touch-icon: /assets/img/favicon.ico
-favicon: /assets/img/favicon.ico
+touch-icon: /assets/img/apple-touch-icon-72x72.png
+favicon: /assets/img/apple-touch-icon-72x72.png
 
 footer:
   show-footer: false
