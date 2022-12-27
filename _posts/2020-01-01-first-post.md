@@ -8,6 +8,7 @@ I see all this talk about jobs going overseas as a symptom of the absence of inn
 
 If you think of feelings you have when you are awed by something - for example, knowing that elements in your body trace to exploded stars - I call that a spiritual reaction, speaking of awe and majesty, where words fail you.
 
+$$E=mc^2$$
 
 
 ``` xml
