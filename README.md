@@ -1,6 +1,6 @@
 ### Hi!
 - 📫 How to reach me: [email](mailto:andrew.wang@ed.ac.uk)
-- 📄 Check out my [links]([https://link](https://linktr.ee/andrew.wang)), [website](https://andrewwango.github.io/), my [CV](https://andrewwango.github.io/cv.pdf) and [Google Scholar](https://scholar.google.com/citations?user=00ET0NAAAAAJ)
+- 📄 Check out my [links](https://linktr.ee/andrew.wang), [website](https://andrewwango.github.io/), my [CV](https://andrewwango.github.io/cv.pdf) and [Google Scholar](https://scholar.google.com/citations?user=00ET0NAAAAAJ)
 <!--
 **Andrewwango/andrewwango** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
 
