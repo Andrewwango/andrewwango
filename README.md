@@ -1,6 +1,7 @@
 ### Hi!
-- 📫 How to reach me: [email](mailto:andrew.wang27@gmail.com)
-- 📄 Check out my [portfolio](https://andrewwango.github.io/), my [CV](https://andrewwango.github.io/cv.pdf) and [Google Scholar](https://scholar.google.com/citations?user=00ET0NAAAAAJ)
+- 📫 How to reach me: [email](mailto:andrew.wang@ed.ac.uk)
+- 📄 Check out my [links](https://linktr.ee/andrew.wang), [website](https://andrewwango.github.io/), my [CV](https://andrewwango.github.io/cv.pdf) and [Google Scholar](https://scholar.google.com/citations?user=00ET0NAAAAAJ)
+- I am a lead developer of [DeepInverse](https://deepinv.github.io/), a PyTorch based library for solving imaging inverse problems with deep learning.
 <!--
 **Andrewwango/andrewwango** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
 
