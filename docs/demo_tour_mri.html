@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.450">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Tour of MRI functionality in DeepInverse</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+</head>
+
+<body class="fullcontent">
+
+<div id="quarto-search-results"></div>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Tour of MRI functionality in DeepInverse</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<p>This example presents the various datasets, forward physics and models available in DeepInverse for Magnetic Resonance Imaging (MRI) problems:</p>
+<ul>
+<li>Physics: :class:<code>deepinv.physics.MRI</code>, :class:<code>deepinv.physics.MultiCoilMRI</code>, :class:<code>deepinv.physics.DynamicMRI</code></li>
+<li>Datasets: the full <a href="https://fastmri.med.nyu.edu">FastMRI</a> dataset :class:<code>deepinv.datasets.FastMRISliceDataset</code> and a lightweight, easy-to-use subset :class:<code>deepinv.datasets.SimpleFastMRISliceDataset</code></li>
+<li>Models: :class:<code>deepinv.models.VarNet</code> (<a href="https://onlinelibrary.wiley.com/doi/full/10.1002/mrm.26977">VarNet</a>/<a href="https://arxiv.org/abs/2004.06688">E2E-VarNet</a>), :class:<code>deepinv.utils.demo.demo_mri_model</code> (a simple <a href="https://ieeexplore.ieee.org/document/8434321">MoDL</a> unrolled model)</li>
+</ul>
+<p>Contents: 1. Get started with FastMRI (singlecoil + multicoil) 2. Train an accelerated MRI with neural networks 3. Load raw FastMRI data (singlecoil + multicoil) 4. Train using raw data 5. Explore 3D MRI 6. Explore dynamic MRI</p>
+<div class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> deepinv <span class="im">as</span> dinv</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch, torchvision</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>device <span class="op">=</span> dinv.utils.get_freer_gpu <span class="cf">if</span> torch.cuda.is_available() <span class="cf">else</span> <span class="st">"cpu"</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>rng <span class="op">=</span> torch.Generator(device<span class="op">=</span>device).manual_seed(<span class="dv">0</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>c:\Users\s2558406\Documents\Repos\deepinv\venv\lib\site-packages\tqdm\auto.py:21: TqdmWarning: IProgress not found. Please update jupyter and ipywidgets. See https://ipywidgets.readthedocs.io/en/stable/user_install.html
+  from .autonotebook import tqdm as notebook_tqdm</code></pre>
+</div>
+</div>
+<section id="get-started-with-fastmri" class="level3">
+<h3 class="anchored" data-anchor-id="get-started-with-fastmri">1. Get started with FastMRI</h3>
+<p>You can get started with our simple <a href="https://fastmri.med.nyu.edu">FastMRI</a> slice subsets which provide quick, easy-to-use, in-memory datasets which can be used for simulation experiments.</p>
+<p>.. important::</p>
+<pre><code>By using this dataset, you confirm that you have agreed to and signed the `FastMRI data use agreement &lt;https://fastmri.med.nyu.edu/&gt;`_.</code></pre>
+<p>Load knee and brain datasets (original data is 320x320 but we resize to 128 for speed):</p>
+<div class="cell" data-execution_count="2">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>transform <span class="op">=</span> torchvision.transforms.Resize(<span class="dv">128</span>)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>knee_dataset <span class="op">=</span> dinv.datasets.SimpleFastMRISliceDataset(</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    dinv.utils.get_data_home(), anatomy<span class="op">=</span><span class="st">"knee"</span>, transform<span class="op">=</span>transform, train<span class="op">=</span><span class="va">True</span>, download<span class="op">=</span><span class="va">True</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>brain_dataset <span class="op">=</span> dinv.datasets.SimpleFastMRISliceDataset(</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    dinv.utils.get_data_home(), anatomy<span class="op">=</span><span class="st">"brain"</span>, transform<span class="op">=</span>transform, train<span class="op">=</span><span class="va">True</span>, download<span class="op">=</span><span class="va">True</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-execution_count="3">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>img_size <span class="op">=</span> knee_dataset[<span class="dv">0</span>].shape[<span class="op">-</span><span class="dv">2</span>:] <span class="co"># (128, 128)</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>dinv.utils.plot({</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"knee"</span>: knee_dataset[<span class="dv">0</span>],</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"brain"</span>: brain_dataset[<span class="dv">0</span>]</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>})</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<p><img src="demo_tour_mri_files/figure-html/cell-4-output-1.png" class="img-fluid"></p>
+</div>
+</div>
+<p>Define single-coil MRI physics. We can define a constant Cartesian 4x undersampling mask by sampling once from a physics generator. The mask, data and measurements will all be of shape <code>(B, C, H, W)</code> where <code>C=2</code> is the real and imaginary parts.</p>
+<div class="cell" data-execution_count="4">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>physics_generator <span class="op">=</span> dinv.physics.generator.GaussianMaskGenerator(img_size<span class="op">=</span>img_size, acceleration<span class="op">=</span><span class="dv">4</span>, rng<span class="op">=</span>rng, device<span class="op">=</span>device)</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>mask <span class="op">=</span> physics_generator.step()[<span class="st">"mask"</span>]</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>physics <span class="op">=</span> dinv.physics.MRI(mask<span class="op">=</span>mask, img_size<span class="op">=</span>img_size, device<span class="op">=</span>device)</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>dinv.utils.plot({</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">"x"</span>: (x <span class="op">:=</span> knee_dataset[<span class="dv">0</span>].unsqueeze(<span class="dv">0</span>)),</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">"mask"</span>: mask,</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>    <span class="st">"y"</span>: physics(x).clamp(<span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>)</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Shapes:"</span>, x.shape, physics.mask.shape)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<p><img src="demo_tour_mri_files/figure-html/cell-5-output-1.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Shapes: torch.Size([1, 2, 128, 128]) torch.Size([1, 2, 128, 128])</code></pre>
+</div>
+</div>
+<p>Generate an accelerated single-coil MRI measurement dataset. Use knees for training and brains for testing.</p>
+<p>We can also use the physics generator to randomly sample a new mask per sample, and save the masks alongside the measurements:</p>
+<div class="cell" data-execution_count="5">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>dataset_path <span class="op">=</span> dinv.datasets.generate_dataset(</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    train_dataset<span class="op">=</span>knee_dataset,</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    test_dataset<span class="op">=</span>brain_dataset,</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    val_dataset<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    physics<span class="op">=</span>physics,</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>    physics_generator<span class="op">=</span>physics_generator,</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>    save_physics_generator_params<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>    overwrite_existing<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>    device<span class="op">=</span>device,</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>    save_dir<span class="op">=</span>dinv.utils.get_data_home(),</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>    batch_size<span class="op">=</span><span class="dv">1</span>,</span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>train_dataset <span class="op">=</span> dinv.datasets.HDF5Dataset(dataset_path, split<span class="op">=</span><span class="st">"train"</span>, load_physics_generator_params<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>test_dataset  <span class="op">=</span> dinv.datasets.HDF5Dataset(dataset_path, split<span class="op">=</span><span class="st">"test"</span>,  load_physics_generator_params<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>dinv.utils.plot({</span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a>    <span class="st">"x0"</span>:    train_dataset[<span class="dv">0</span>][<span class="dv">0</span>],</span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a>    <span class="st">"mask0"</span>: train_dataset[<span class="dv">0</span>][<span class="dv">2</span>][<span class="st">"mask"</span>],</span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a>    <span class="st">"x1"</span>:    train_dataset[<span class="dv">1</span>][<span class="dv">0</span>],</span>
+<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a>    <span class="st">"mask1"</span>: train_dataset[<span class="dv">1</span>][<span class="dv">2</span>][<span class="st">"mask"</span>],</span>
+<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a>})</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>C:\Users\s2558406\Documents\Repos\deepinv\deepinv\datasets\datagenerator.py:220: UserWarning: Dataset datasets/dinv_dataset0.h5 already exists, skipping...
+  warn(f"Dataset {hf_path} already exists, skipping...")</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="demo_tour_mri_files/figure-html/cell-6-output-2.png" class="img-fluid"></p>
+</div>
+</div>
+<p>You can also simulate multicoil MRI data. Either pass in ground-truth coil maps, or pass an integer to simulate simple birdcage coil maps. The measurements <code>y</code> are now of shape <code>(B, C, N, H, W)</code>, where <code>N</code> is the coil-dimension.</p>
+<div class="cell" data-execution_count="6">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>mc_physics <span class="op">=</span> dinv.physics.MultiCoilMRI(img_size<span class="op">=</span>img_size, coil_maps<span class="op">=</span><span class="dv">3</span>, device<span class="op">=</span>device)</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>dinv.utils.plot({</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"x"</span>: x,</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"coil_map_0"</span>: mc_physics.coil_maps.<span class="bu">abs</span>()[:, <span class="dv">0</span>, ...],</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">"coil_map_1"</span>: mc_physics.coil_maps.<span class="bu">abs</span>()[:, <span class="dv">1</span>, ...],</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">"coil_map_2"</span>: mc_physics.coil_maps.<span class="bu">abs</span>()[:, <span class="dv">2</span>, ...],</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">"x RSS"</span>: mc_physics.A_adjoint_A(x, mask<span class="op">=</span>mask, rss<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>})</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<p><img src="demo_tour_mri_files/figure-html/cell-7-output-1.png" class="img-fluid"></p>
+</div>
+</div>
+</section>
+<section id="train-an-accelerated-mri-problem-with-neural-networks" class="level3">
+<h3 class="anchored" data-anchor-id="train-an-accelerated-mri-problem-with-neural-networks">2. Train an accelerated MRI problem with neural networks</h3>
+<p>Train a neural network to solve the inverse problem. We provide various models specifically used for MRI reconstruction. These are unrolled networks which require a denoiser, such as UNet or DnCNN as a backbone:</p>
+<div class="cell" data-execution_count="7">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>denoiser <span class="op">=</span> dinv.models.UNet(</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    in_channels<span class="op">=</span><span class="dv">2</span>,</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    out_channels<span class="op">=</span><span class="dv">2</span>,</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    scales<span class="op">=</span><span class="dv">2</span>,</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>denoiser <span class="op">=</span> dinv.models.DnCNN(</span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>    in_channels<span class="op">=</span><span class="dv">2</span>,</span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>    out_channels<span class="op">=</span><span class="dv">2</span>,</span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>    pretrained<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>    depth<span class="op">=</span><span class="dv">2</span>,</span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>We provide some specific implementations, including <a href="https://onlinelibrary.wiley.com/doi/full/10.1002/mrm.26977">VarNet</a>/<a href="https://arxiv.org/abs/2004.06688">E2E-VarNet</a> and <a href="https://ieeexplore.ieee.org/document/8434321">MoDL</a>:</p>
+<div class="cell" data-execution_count="8">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> dinv.models.VarNet(denoiser, num_cascades<span class="op">=</span><span class="dv">2</span>, mode<span class="op">=</span><span class="st">"varnet"</span>).to(device)</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> dinv.utils.demo.demo_mri_model(denoiser, num_iter<span class="op">=</span><span class="dv">2</span>, device<span class="op">=</span>device).to(device)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Train a network with supervised or self-supervised (using Equivariant Imaging) loss.</p>
+<p>For speed, we only use a very small 2-layer DnCNN inside a unrolled network with 2 cascades, and train with 5 images for 1 epoch, but load a pretrained model that has been trained with 10 images for 50 epochs:</p>
+<div class="cell" data-execution_count="9">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>loss <span class="op">=</span> dinv.loss.SupLoss()</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>loss <span class="op">=</span> dinv.loss.EILoss(transform<span class="op">=</span>dinv.transform.CPABDiffeomorphism())</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>trainer <span class="op">=</span> dinv.Trainer(</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>    model<span class="op">=</span>model,</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>    physics<span class="op">=</span>physics,</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>    optimizer<span class="op">=</span>torch.optim.Adam(model.parameters()),</span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>    train_dataloader<span class="op">=</span>(train_dataloader <span class="op">:=</span> torch.utils.data.DataLoader(torch.utils.data.Subset(train_dataset, <span class="bu">range</span>(<span class="dv">5</span>)))),</span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>    epochs<span class="op">=</span><span class="dv">1</span>,</span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>    show_progress_bar<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>    save_path<span class="op">=</span><span class="va">None</span></span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a>url <span class="op">=</span> dinv.models.utils.get_weights_url(model_name<span class="op">=</span><span class="st">"demo"</span>, file_name<span class="op">=</span><span class="st">"demo_tour_mri.pth"</span>)</span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a>ckpt <span class="op">=</span> torch.hub.load_state_dict_from_url(url, map_location<span class="op">=</span><span class="kw">lambda</span> storage, loc: storage, file_name<span class="op">=</span><span class="st">"demo_tour_mri.pth"</span>)</span>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a>trainer.model.load_state_dict(ckpt[<span class="st">"state_dict"</span>])</span>
+<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a>trainer.optimizer.load_state_dict(ckpt[<span class="st">"optimizer"</span>])</span>
+<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> trainer.train()</span>
+<span id="cb13-20"><a href="#cb13-20" aria-hidden="true" tabindex="-1"></a>trainer.plot_images <span class="op">=</span> <span class="va">True</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>The model has 2376 trainable parameters
+Train epoch 0: TotalLoss=0.001, PSNR=30.263</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<pre><code>&lt;Figure size 640x480 with 0 Axes&gt;</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<pre><code>&lt;Figure size 640x480 with 0 Axes&gt;</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<pre><code>&lt;Figure size 640x480 with 0 Axes&gt;</code></pre>
+</div>
+</div>
+<p>Test the model: we improve the PSNR compared to the zero-filled reconstruction, both on the train (knee) set and the test (brain) set:</p>
+<div class="cell" data-execution_count="10">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>_ <span class="op">=</span> trainer.test(train_dataloader)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Eval epoch 0: PSNR=30.295, PSNR no learning=27.169
+Test results:
+PSNR no learning: 27.169 +- 1.845
+PSNR: 30.295 +- 1.207</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="demo_tour_mri_files/figure-html/cell-11-output-2.png" class="img-fluid"></p>
+</div>
+</div>
+<div class="cell" data-execution_count="11">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>_ <span class="op">=</span> trainer.test(torch.utils.data.DataLoader(torch.utils.data.Subset(test_dataset, <span class="bu">range</span>(<span class="dv">5</span>))))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Eval epoch 0: PSNR=30.229, PSNR no learning=28.409
+Test results:
+PSNR no learning: 28.409 +- 1.409
+PSNR: 30.229 +- 1.556</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="demo_tour_mri_files/figure-html/cell-12-output-2.png" class="img-fluid"></p>
+</div>
+</div>
+</section>
+<section id="load-raw-fastmri-data" class="level3">
+<h3 class="anchored" data-anchor-id="load-raw-fastmri-data">3. Load raw FastMRI data</h3>
+<p>The raw multi-coil FastMRI data is provided as pairs of <code>(x, y)</code> where <code>y</code> are the fully-sampled k-space measurements of arbitrary size, and <code>x</code> are the cropped root-sum-square (RSS) magnitude reconstructions.</p>
+<div class="cell" data-execution_count="12">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co">#dinv.datasets.download_archive(dinv.utils.get_image_url("fastmri_brain_multicoil_train_0.h5"), dinv.utils.get_data_home() / "brain" / "fastmri.h5")</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>dataset <span class="op">=</span> dinv.datasets.FastMRISliceDataset(dinv.utils.get_data_home() <span class="op">/</span> <span class="st">"brain"</span>, slice_index<span class="op">=</span><span class="st">"middle"</span>)</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>x, y <span class="op">=</span> dataset[<span class="dv">0</span>]</span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>x, y <span class="op">=</span> x.unsqueeze(<span class="dv">0</span>), y.unsqueeze(<span class="dv">0</span>)</span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Shapes:"</span>, x.shape, y.shape) <span class="co"># x (B, 1, W, W); y (B, C, N, H, W)</span></span>
+<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a>img_shape, kspace_shape <span class="op">=</span> x.shape[<span class="op">-</span><span class="dv">2</span>:], y.shape[<span class="op">-</span><span class="dv">2</span>:]</span>
+<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a>n_coils <span class="op">=</span> y.shape[<span class="dv">2</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>100%|██████████| 1/1 [00:00&lt;?, ?it/s]</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Shapes: torch.Size([1, 1, 320, 320]) torch.Size([1, 2, 20, 640, 320])</code></pre>
+</div>
+</div>
+<p>We can relate <code>x</code> and <code>y</code> using our :class:<code>deepinv.physics.MultiCoilMRI</code> (note that since we aren’t provided with the ground-truth coil-maps, we can only perform the adjoint operator).</p>
+<div class="cell" data-execution_count="13">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>physics <span class="op">=</span> dinv.physics.MultiCoilMRI(</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>    img_size<span class="op">=</span>img_shape,</span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>    mask<span class="op">=</span>torch.ones(kspace_shape),</span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>    coil_maps<span class="op">=</span>torch.ones((n_coils,) <span class="op">+</span> kspace_shape, dtype<span class="op">=</span>torch.complex64),</span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>    device<span class="op">=</span>device</span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a>x_rss <span class="op">=</span> physics.A_adjoint(y, rss<span class="op">=</span><span class="va">True</span>, crop<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> torch.allclose(x, x_rss)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="train-using-raw-data" class="level3">
+<h3 class="anchored" data-anchor-id="train-using-raw-data">4. Train using raw data</h3>
+<p>We now use a mask generator to generate acceleration masks on-the-fly (“online”) during training. We use the E2E-VarNet model designed for multicoil MRI. We do not perform coil sensitivity map estimation and simply assume they are flat as above. To do this yourself, pass a model as the <code>sensitivity_model</code> parameter.</p>
+<div class="cell" data-execution_count="14">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>physics_generator <span class="op">=</span> dinv.physics.generator.GaussianMaskGenerator(img_size<span class="op">=</span>kspace_shape, acceleration<span class="op">=</span><span class="dv">4</span>, rng<span class="op">=</span>rng, device<span class="op">=</span>device)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-execution_count="15">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> dinv.models.VarNet(denoiser, num_cascades<span class="op">=</span><span class="dv">2</span>, mode<span class="op">=</span><span class="st">"e2e-varnet"</span>).to(device)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Note that we require overriding the base :class:<code>deepinv.training.Trainer</code> to deal with raw measurements, as we do not want to generate k-space measurements, only mask it.</p>
+<p>.. note ::</p>
+<pre><code>We require `loop_physics_generator=True` and `shuffle=False` in the dataloader to ensure that each image is always matched with the same random mask at each iteration.</code></pre>
+<div class="cell" data-execution_count="16">
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> RawFastMRITrainer(dinv.Trainer):</span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> get_samples_online(<span class="va">self</span>, iterators, g):</span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Get data</span></span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>        x, y <span class="op">=</span> <span class="bu">next</span>(iterators[g])</span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>        x, y <span class="op">=</span> x.to(<span class="va">self</span>.device), y.to(<span class="va">self</span>.device)</span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Get physics</span></span>
+<span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a>        physics <span class="op">=</span> <span class="va">self</span>.physics[g]</span>
+<span id="cb29-9"><a href="#cb29-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-10"><a href="#cb29-10" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Generate random mask</span></span>
+<span id="cb29-11"><a href="#cb29-11" aria-hidden="true" tabindex="-1"></a>        params <span class="op">=</span> <span class="va">self</span>.physics_generator[g].step(batch_size<span class="op">=</span>y.size(<span class="dv">0</span>), img_size<span class="op">=</span>y.shape[<span class="op">-</span><span class="dv">2</span>:])</span>
+<span id="cb29-12"><a href="#cb29-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-13"><a href="#cb29-13" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Generate measurements directly from raw measurements</span></span>
+<span id="cb29-14"><a href="#cb29-14" aria-hidden="true" tabindex="-1"></a>        y <span class="op">*=</span> params[<span class="st">"mask"</span>]</span>
+<span id="cb29-15"><a href="#cb29-15" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb29-16"><a href="#cb29-16" aria-hidden="true" tabindex="-1"></a>        physics.update_parameters(<span class="op">**</span>params)</span>
+<span id="cb29-17"><a href="#cb29-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-18"><a href="#cb29-18" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> x, y, physics</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>We also need to modify the metrics used to crop the model output when comparing to the cropped magnitude RSS targets:</p>
+<div class="cell" data-execution_count="17">
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> CropMSE(torch.nn.MSELoss):</span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> forward(<span class="va">self</span>, <span class="bu">input</span>, target):</span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>        transform <span class="op">=</span> torchvision.transforms.CenterCrop(target.shape[<span class="op">-</span><span class="dv">2</span>:])</span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="bu">super</span>().forward(dinv.metric.functional.complex_abs(transform(<span class="bu">input</span>)), target)</span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> CropPSNR(dinv.loss.PSNR):</span>
+<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> forward(<span class="va">self</span>, x_net <span class="op">=</span> <span class="va">None</span>, x <span class="op">=</span> <span class="va">None</span>, <span class="op">*</span>args, <span class="op">**</span>kwargs):</span>
+<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a>        transform <span class="op">=</span> torchvision.transforms.CenterCrop(x.shape[<span class="op">-</span><span class="dv">2</span>:])</span>
+<span id="cb30-9"><a href="#cb30-9" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="bu">super</span>().forward(transform(x_net), x, <span class="op">*</span>args, <span class="op">**</span>kwargs)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-execution_count="18">
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>trainer <span class="op">=</span> RawFastMRITrainer(</span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>    model<span class="op">=</span>model,</span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>    physics<span class="op">=</span>physics,</span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>    physics_generator<span class="op">=</span>physics_generator,</span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a>    online_measurements<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a>    loop_physics_generator<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a>    losses<span class="op">=</span>dinv.loss.SupLoss(metric<span class="op">=</span>CropMSE()),</span>
+<span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a>    metrics<span class="op">=</span>CropPSNR(),</span>
+<span id="cb31-9"><a href="#cb31-9" aria-hidden="true" tabindex="-1"></a>    optimizer<span class="op">=</span>torch.optim.Adam(model.parameters()),</span>
+<span id="cb31-10"><a href="#cb31-10" aria-hidden="true" tabindex="-1"></a>    train_dataloader<span class="op">=</span>torch.utils.data.DataLoader(dataset, shuffle<span class="op">=</span><span class="va">False</span>),</span>
+<span id="cb31-11"><a href="#cb31-11" aria-hidden="true" tabindex="-1"></a>    epochs<span class="op">=</span><span class="dv">1</span>,</span>
+<span id="cb31-12"><a href="#cb31-12" aria-hidden="true" tabindex="-1"></a>    save_path<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb31-13"><a href="#cb31-13" aria-hidden="true" tabindex="-1"></a>    show_progress_bar<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb31-14"><a href="#cb31-14" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb31-15"><a href="#cb31-15" aria-hidden="true" tabindex="-1"></a>_ <span class="op">=</span> trainer.train()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>C:\Users\s2558406\Documents\Repos\deepinv\deepinv\training\trainer.py:192: UserWarning: Generated measurements repeat each epoch. Ensure that dataloader is not shuffling.
+  warnings.warn(
+c:\Users\s2558406\Documents\Repos\deepinv\venv\lib\site-packages\torch\nn\modules\loss.py:535: UserWarning: Using a target size (torch.Size([1, 1, 320, 320])) that is different to the input size (torch.Size([1, 1, 20, 320, 320])). This will likely lead to incorrect results due to broadcasting. Please ensure they have the same size.
+  return F.mse_loss(input, target, reduction=self.reduction)</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>The model has 2372 trainable parameters
+Train epoch 0: TotalLoss=0.783, CropPSNR=4.072</code></pre>
+</div>
+</div>
+</section>
+<section id="explore-3d-mri" class="level3">
+<h3 class="anchored" data-anchor-id="explore-3d-mri">5. Explore 3D MRI</h3>
+<p>We use a demo 3D brain volume of shape <code>(181, 217, 181)</code> and simulate 3D single-coil or multi-coil Fourier measurements using :class:<code>deepinv.physics.MRI</code> or :class:<code>deepinv.physics.MultiCoilMRI</code>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> torch.from_numpy(dinv.utils.demo.load_np_url(</span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">"https://huggingface.co/datasets/deepinv/images/resolve/main/brainweb_t1_ICBM_1mm_subject_0.npy?download=true"</span></span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>)).unsqueeze(<span class="dv">0</span>).unsqueeze(<span class="dv">0</span>).to(device)</span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> torch.cat([x, torch.zeros_like(x)], dim<span class="op">=</span><span class="dv">1</span>) <span class="co"># add imaginary dimension</span></span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(x.shape) <span class="co"># (B, C, D, H, W) where D is depth</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="29">
+<pre><code>torch.Size([1, 2, 181, 217, 181])</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="35">
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>physics <span class="op">=</span> dinv.physics.MultiCoilMRI(img_size<span class="op">=</span>x.shape[<span class="dv">1</span>:], three_d<span class="op">=</span><span class="va">True</span>, device<span class="op">=</span>device)</span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>physics <span class="op">=</span> dinv.physics.MRI(img_size<span class="op">=</span>x.shape[<span class="dv">1</span>:], three_d<span class="op">=</span><span class="va">True</span>, device<span class="op">=</span>device)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-execution_count="38">
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>dinv.utils.plot_ortho3D([x, physics(x)], titles<span class="op">=</span>[<span class="st">"x"</span>, <span class="st">"y"</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<p><img src="demo_tour_mri_files/figure-html/cell-22-output-1.png" class="img-fluid"></p>
+</div>
+</div>
+</section>
+<section id="explore-dynamic-mri" class="level3">
+<h3 class="anchored" data-anchor-id="explore-dynamic-mri">6. Explore dynamic MRI</h3>
+<p>Finally, we show how to use the dynamic MRI for image sequence data of shape <code>(B, C, T, H, W)</code> where <code>T</code> is the time dimension. note that this is also compatible with 3D MRI. We simulate an MRI image sequence using the first 5 knees:</p>
+<div class="cell" data-execution_count="41">
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> torch.stack([knee_dataset[i] <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">5</span>)], dim<span class="op">=</span><span class="dv">1</span>).unsqueeze(<span class="dv">0</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Generate a Cartesian k-t sampling mask and simulate k-t-space measurements:</p>
+<div class="cell" data-execution_count="46">
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>physics_generator <span class="op">=</span> dinv.physics.generator.EquispacedMaskGenerator(img_size<span class="op">=</span>img_size, acceleration<span class="op">=</span><span class="dv">4</span>, rng<span class="op">=</span>rng, device<span class="op">=</span>device)</span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>mask <span class="op">=</span> physics_generator.step()[<span class="st">"mask"</span>]</span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a>physics <span class="op">=</span> dinv.physics.DynamicMRI(mask<span class="op">=</span>mask, img_size<span class="op">=</span>img_size, device<span class="op">=</span>device)</span>
+<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> physics(x)</span>
+<span id="cb39-6"><a href="#cb39-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-7"><a href="#cb39-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(x.shape, physics(x).shape)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>torch.Size([1, 2, 5, 128, 128]) torch.Size([1, 2, 5, 128, 128])</code></pre>
+</div>
+</div>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>
